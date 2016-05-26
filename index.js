@@ -12,4 +12,5 @@ exports.ShowItBootstrap = sizes_1.ShowItBootstrap;
 exports.HideItBootstrap = sizes_1.HideItBootstrap;
 exports.ShowItSizes = sizes_1.ShowItSizes;
 exports.HideItSizes = sizes_1.HideItSizes;
+exports.BootstrapConfig = sizes_1.BootstrapConfig;
 //# sourceMappingURL=index.js.map

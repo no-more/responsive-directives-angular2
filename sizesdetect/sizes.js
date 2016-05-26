@@ -27,14 +27,69 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+/*
+CUSTOM SIZES IN GLOBAL APP
+
+Set this code in the initial app component.
+//import {BootstrapConfig } from 'responsive-directives-angular2';
+
+@Component({
+  selector: 'my-app',
+  viewProviders: [NameListService],
+  templateUrl: 'app/components/app.component.html',
+  providers:[BootstrapConfig],
+  directives: [ROUTER_DIRECTIVES, MenuComponent,FooterComponent]
+})
+
+export class AppComponent {
+ 
+  private static MY_NEW_BOOTSTRAP_CONFIG = {
+        lg: { min: 40 },
+    md: { min: 22, max: 39 },
+    sm: { min: 18, max: 21 },
+    xs: { max: 17 }
+    };
+  
+  constructor(private myNewBootstrapConfig:BootstrapConfig){
+    this.myNewBootstrapConfig.Config(AppComponent.MY_NEW_BOOTSTRAP_CONFIG);
+  }
+}
+
+bootstrap(AppComponent, [
+
+]);
+
+*/
 var core_1 = require('@angular/core');
 require('rxjs/add/operator/share');
 var Rx_1 = require('rxjs/Rx');
-exports.RESPONSIVE_DEVICE_SIZES = {
-    lg: { min: 1200 },
-    md: { min: 992, max: 1199 },
-    sm: { min: 768, max: 991 },
-    xs: { max: 767 } };
+var BootstrapConfig = (function () {
+    function BootstrapConfig(lg, md, sm, xs) {
+        this.lg = lg;
+        this.md = md;
+        this.sm = sm;
+        this.xs = xs;
+    }
+    //Call this method in bootstrap init application   
+    BootstrapConfig.prototype.Config = function (newConfig) {
+        //Assign new config to ResponsiveState
+        BootstrapConfig._config = newConfig;
+    };
+    // => Default config if user not configure custom sizes
+    BootstrapConfig.DEFAULT_CONFIG = {
+        lg: { min: 1200 },
+        md: { min: 992, max: 1199 },
+        sm: { min: 768, max: 991 },
+        xs: { max: 767 }
+    };
+    BootstrapConfig._config = BootstrapConfig.DEFAULT_CONFIG;
+    BootstrapConfig = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [Object, Object, Object, Object])
+    ], BootstrapConfig);
+    return BootstrapConfig;
+}());
+exports.BootstrapConfig = BootstrapConfig;
 var ResponsiveState = (function () {
     function ResponsiveState() {
         var _this = this;
@@ -49,16 +104,16 @@ var ResponsiveState = (function () {
         this.sizeOperations = function () {
             _this.width = _this.getWidth();
             try {
-                if (exports.RESPONSIVE_DEVICE_SIZES.lg.min <= _this.width) {
+                if (BootstrapConfig._config.lg.min <= _this.width) {
                     return 'lg';
                 }
-                else if (exports.RESPONSIVE_DEVICE_SIZES.md.max >= _this.width && exports.RESPONSIVE_DEVICE_SIZES.md.min <= _this.width) {
+                else if (BootstrapConfig._config.md.max >= _this.width && BootstrapConfig._config.md.min <= _this.width) {
                     return 'md';
                 }
-                else if (exports.RESPONSIVE_DEVICE_SIZES.sm.max >= _this.width && exports.RESPONSIVE_DEVICE_SIZES.sm.min <= _this.width) {
+                else if (BootstrapConfig._config.sm.max >= _this.width && BootstrapConfig._config.sm.min <= _this.width) {
                     return 'sm';
                 }
-                else if (exports.RESPONSIVE_DEVICE_SIZES.xs.max >= _this.width) {
+                else if (BootstrapConfig._config.xs.max >= _this.width) {
                     return 'xs';
                 }
             }
@@ -74,10 +129,6 @@ var ResponsiveState = (function () {
     ResponsiveState.prototype.getWidth = function () {
         return window.innerWidth;
     };
-    ResponsiveState = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], ResponsiveState);
     return ResponsiveState;
 }());
 exports.ResponsiveState = ResponsiveState;

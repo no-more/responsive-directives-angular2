@@ -18,17 +18,75 @@
  *
  */
 
+/*
+CUSTOM SIZES IN GLOBAL APP
+
+Set this code in the initial app component.
+//import {BootstrapConfig } from 'responsive-directives-angular2';
+
+@Component({
+  selector: 'my-app',
+  viewProviders: [NameListService],
+  templateUrl: 'app/components/app.component.html',
+  providers:[BootstrapConfig],
+  directives: [ROUTER_DIRECTIVES, MenuComponent,FooterComponent]
+})
+
+export class AppComponent {
+ 
+  private static MY_NEW_BOOTSTRAP_CONFIG = {
+		lg: { min: 40 },
+    md: { min: 22, max: 39 },
+    sm: { min: 18, max: 21 },
+    xs: { max: 17 }
+	};
+  
+  constructor(private myNewBootstrapConfig:BootstrapConfig){
+    this.myNewBootstrapConfig.Config(AppComponent.MY_NEW_BOOTSTRAP_CONFIG);
+  }
+}
+
+bootstrap(AppComponent, [
+
+]);
+
+*/
+
 import {Injectable, Directive, Input, TemplateRef, ViewContainerRef, ElementRef,OnInit} from '@angular/core';
 import 'rxjs/add/operator/share';
 import {Observable, Observer} from  'rxjs/Rx';
 
-export const RESPONSIVE_DEVICE_SIZES = {
-      lg: { min: 1200 },
-      md: { min: 992, max: 1199 },
-      sm: { min: 768, max: 991 },
-      xs: { max: 767 } };
+//	Default config
+export interface BOOTSTRAP_SIZES {
+	lg:any,
+    md:any,
+    sm:any,
+    xs:any
+}
 
 @Injectable()
+export class BootstrapConfig implements BOOTSTRAP_SIZES {
+    
+    private user_configuration:any;
+    // => Default config if user not configure custom sizes
+	public static DEFAULT_CONFIG:BOOTSTRAP_SIZES = {
+		lg: { min: 1200 },
+        md: { min: 992, max: 1199 },
+        sm: { min: 768, max: 991 },
+        xs: { max: 767 }
+	};
+    
+     public static _config = BootstrapConfig.DEFAULT_CONFIG;
+     
+     constructor(public lg:any,public md:any, public sm:any, public xs:any){}
+     
+    //Call this method in bootstrap init application   
+    Config(newConfig:any){
+        //Assign new config to ResponsiveState
+        BootstrapConfig._config = newConfig;
+    }
+}
+
 export class ResponsiveState {
     elementoObservar: Observable<any>;
     anchoObservar:Observable<any>;
@@ -55,13 +113,13 @@ export class ResponsiveState {
     sizeOperations = (): any => {
         this.width = this.getWidth();
         try {
-            if (RESPONSIVE_DEVICE_SIZES.lg.min <= this.width) {
+            if (BootstrapConfig._config.lg.min <= this.width) {
                 return 'lg';  
-            } else if (RESPONSIVE_DEVICE_SIZES.md.max >= this.width && RESPONSIVE_DEVICE_SIZES.md.min <= this.width) {
+            } else if (BootstrapConfig._config.md.max >= this.width && BootstrapConfig._config.md.min <= this.width) {
                 return 'md';   
-            } else if (RESPONSIVE_DEVICE_SIZES.sm.max >= this.width && RESPONSIVE_DEVICE_SIZES.sm.min <= this.width) {
+            } else if (BootstrapConfig._config.sm.max >= this.width && BootstrapConfig._config.sm.min <= this.width) {
                 return 'sm';   
-            } else if (RESPONSIVE_DEVICE_SIZES.xs.max >= this.width) {
+            } else if (BootstrapConfig._config.xs.max >= this.width) {
                 return 'xs';
             }
         } catch (error) {
